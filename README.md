@@ -4,12 +4,11 @@ A tiny SuperBLT mod that locally treats PAYDAY 2's Copycat perk deck as availabl
 
 ## What it does
 
-- Marks the Shredding Christmas side job (`cg22_community_4`) as locally completed/rewarded
-- Sets the 30-present personal objective (`cg22_sacrifice_objective`) complete
-- Sets the CG22 stage objective complete for that side job
-- Removes Copycat's deck metadata gate: `dlc = "mrwi_deck"`
-- Does not patch `GenericDLCManager`
+- Makes only `GenericDLCManager:has_mrwi_deck()` return `true`
+- Does not patch `GenericDLCManager:is_dlc_unlocked()`
 - Does not patch platform entitlement checks like `WinSteamDLCManager:_check_dlc_data()`
+- Does not patch skill tree data
+- Does not patch side-job save/progress state
 - Does not modify broad DLC verification state
 - Does not unlock paid DLC broadly
 - Does not grant perk points
@@ -34,8 +33,8 @@ PAYDAY 2/
 
 ## Compatibility
 
-Version `1.1.0` avoids the DLC manager entirely so it should not fight broad DLC unlocker mods like `pd2-stuff/DLC-Unlocker-PD2`.
+Version `1.2.0` is intentionally minimal. It hooks only `lib/managers/dlcmanager` and overrides only the Copycat-specific event predicate, `has_mrwi_deck()`.
 
-That mod patches platform DLC entitlement checks. This mod instead hooks `lib/managers/sidejobeventmanager` and locally completes only Copycat's source side job, Shredding Christmas. It also hooks `lib/tweak_data/skilltreetweakdata` as a UI fallback to remove only the `dlc` field from specialization 23, Copycat.
+Broad DLC unlocker mods like `pd2-stuff/DLC-Unlocker-PD2` patch platform DLC entitlement checks such as `WinSteamDLCManager:_check_dlc_data()`. This mod does not touch those paths.
 
-If the deck still appears locked, restart the game after installing the mod.
+If this still conflicts, disable every previous copy/version of this mod and send the SuperBLT log line/error; the remaining likely causes are duplicate installs or load-order behavior from another mod replacing `has_mrwi_deck()` after this one.
