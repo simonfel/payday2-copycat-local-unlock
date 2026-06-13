@@ -1,16 +1,15 @@
 # PAYDAY 2 Copycat Local Unlock
 
-A tiny SuperBLT mod that locally treats PAYDAY 2's Copycat perk deck unlock flag as available.
+A tiny SuperBLT mod that locally treats PAYDAY 2's Copycat perk deck as available.
 
 ## What it does
 
-- Treats Copycat's unlock id, `mrwi_deck`, as unlocked
+- Removes Copycat's deck metadata gate: `dlc = "mrwi_deck"`
+- Does not patch `GenericDLCManager`
+- Does not patch platform entitlement checks like `WinSteamDLCManager:_check_dlc_data()`
+- Does not modify DLC verification state
 - Does not unlock paid DLC broadly
 - Does not grant perk points
-- Does not modify unrelated DLC checks
-- Avoids platform entitlement checks used by broader DLC-related mods
-- Overrides only Copycat's dedicated `GenericDLCManager:has_mrwi_deck()` predicate
-- Keeps a scoped `is_dlc_unlocked("mrwi_deck")` fallback for UI paths
 
 Intended for private/local play with friends.
 
@@ -30,16 +29,10 @@ PAYDAY 2/
       copycat_local_unlock.lua
 ```
 
-## Notes
-
-This is intentionally scoped to Copycat's unlock id only. If the deck still appears locked, restart the game after installing the mod.
-
 ## Compatibility
 
-Version `1.0.2` is designed to avoid conflicts with broad DLC-related mods like `pd2-stuff/DLC-Unlocker-PD2`:
+Version `1.0.3` avoids the DLC manager entirely so it should not fight broad DLC unlocker mods like `pd2-stuff/DLC-Unlocker-PD2`.
 
-- That mod patches platform entitlement checks such as `WinSteamDLCManager:_check_dlc_data()`.
-- Copycat is not gated by that normal entitlement path. It is gated by `GenericDLCManager:has_mrwi_deck()`, which checks event-job reward state.
-- This mod therefore overrides only `has_mrwi_deck()` and keeps a scoped `is_dlc_unlocked("mrwi_deck")` fallback.
+That mod patches platform DLC entitlement checks. This mod instead hooks `lib/tweak_data/skilltreetweakdata` and removes only the `dlc` field from specialization 23, Copycat, after the game's skill tree data is initialized.
 
-If another mod also changes DLC behavior, keep that mod installed as usual and install this one alongside it.
+If the deck still appears locked, restart the game after installing the mod.

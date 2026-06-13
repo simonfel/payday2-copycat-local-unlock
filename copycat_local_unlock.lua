@@ -1,42 +1,30 @@
 -- Copycat Local Unlock
--- SuperBLT hook: lib/managers/dlcmanager
+-- SuperBLT hook: lib/tweak_data/skilltreetweakdata
 --
--- PAYDAY 2's Copycat perk deck is specialization 23 and is gated by the
--- `mrwi_deck` unlock id. Unlike normal DLC, `mrwi_deck` is checked through
--- GenericDLCManager:has_mrwi_deck(), which reads event-job reward state.
+-- PAYDAY 2's Copycat perk deck is specialization 23. The deck metadata has
+-- `dlc = "mrwi_deck"`, which makes the UI treat it as locked unless the old
+-- event reward has been claimed.
 --
--- Compatibility note:
--- Broad DLC unlocker mods usually patch platform entitlement checks such as
--- WinSteamDLCManager:_check_dlc_data(). Copycat does not depend on those checks,
--- so this mod avoids touching them and only overrides the Copycat-specific
--- predicate. It also keeps an is_dlc_unlocked fallback for UI paths that ask for
--- `mrwi_deck` by id.
+-- To avoid conflicting with broader DLC unlocker mods, this mod does NOT patch
+-- GenericDLCManager, platform entitlement checks, or DLC verification state.
+-- It only removes the Copycat deck's own metadata gate after SkillTreeTweakData
+-- builds the specialization table.
 
-local COPYCAT_UNLOCK_ID = "mrwi_deck"
+local COPYCAT_SPECIALIZATION_INDEX = 23
+local COPYCAT_NAME_ID = "menu_st_spec_23"
 
-if GenericDLCManager and not GenericDLCManager.__copycat_local_unlock_installed then
-  GenericDLCManager.__copycat_local_unlock_installed = true
+if SkillTreeTweakData and not SkillTreeTweakData.__copycat_local_unlock_installed then
+  SkillTreeTweakData.__copycat_local_unlock_installed = true
 
-  local previous_has_mrwi_deck = GenericDLCManager.has_mrwi_deck
-  local previous_is_dlc_unlocked = GenericDLCManager.is_dlc_unlocked
+  local previous_init = SkillTreeTweakData.init
 
-  function GenericDLCManager:has_mrwi_deck(...)
-    return true
-  end
+  function SkillTreeTweakData:init(...)
+    previous_init(self, ...)
 
-  function GenericDLCManager:is_dlc_unlocked(dlc, ...)
-    if dlc == COPYCAT_UNLOCK_ID then
-      return true
+    local copycat = self.specializations and self.specializations[COPYCAT_SPECIALIZATION_INDEX]
+
+    if copycat and copycat.name_id == COPYCAT_NAME_ID then
+      copycat.dlc = nil
     end
-
-    if previous_is_dlc_unlocked then
-      return previous_is_dlc_unlocked(self, dlc, ...)
-    end
-
-    return false
   end
-
-  -- Keep a reference around for debugging/compatibility with mod stacks that
-  -- inspect prior implementations.
-  GenericDLCManager.__copycat_local_unlock_previous_has_mrwi_deck = previous_has_mrwi_deck
 end
