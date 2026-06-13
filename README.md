@@ -31,8 +31,8 @@ PAYDAY 2/
 
 ## Compatibility
 
-Version `1.0.3` avoids the DLC manager entirely so it should not fight broad DLC unlocker mods like `pd2-stuff/DLC-Unlocker-PD2`.
+Version `1.0.4` avoids the DLC manager entirely so it should not fight broad DLC unlocker mods like `pd2-stuff/DLC-Unlocker-PD2`.
 
-That mod patches platform DLC entitlement checks. This mod instead hooks `lib/tweak_data/skilltreetweakdata` and removes only the `dlc` field from specialization 23, Copycat, after the game's skill tree data is initialized.
+That mod patches platform DLC entitlement checks. This mod instead hooks `lib/tweak_data/skilltreetweakdata` and removes only the `dlc` field from specialization 23, Copycat, after the game's skill tree data is initialized. It uses SuperBLT's `Hooks:PostHook` API instead of directly replacing `SkillTreeTweakData:init`, which should be friendlier to other mods that also touch the skill tree.
 
 If the deck still appears locked, restart the game after installing the mod.
