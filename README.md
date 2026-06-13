@@ -8,6 +8,8 @@ A tiny SuperBLT mod that locally treats PAYDAY 2's Copycat perk deck unlock flag
 - Does not unlock paid DLC broadly
 - Does not grant perk points
 - Does not modify unrelated DLC checks
+- Avoids overriding `has_dlc`, which makes it less likely to conflict with broader DLC-related mods
+- Chains to any existing `GenericDLCManager.is_dlc_unlocked` implementation loaded before it
 
 Intended for private/local play with friends.
 
@@ -30,3 +32,13 @@ PAYDAY 2/
 ## Notes
 
 This is intentionally scoped to Copycat's unlock id only. If the deck still appears locked, restart the game after installing the mod.
+
+## Compatibility
+
+Version `1.0.1` is designed to be less invasive around other DLC-related mods:
+
+- It only wraps `GenericDLCManager:is_dlc_unlocked`.
+- It no longer wraps `GenericDLCManager:has_dlc`.
+- For anything except `mrwi_deck`, it delegates to the previous implementation.
+
+If another mod also changes DLC behavior, keep that mod installed as usual and install this one alongside it.

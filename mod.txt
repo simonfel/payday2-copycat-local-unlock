@@ -2,7 +2,7 @@
   "name": "Copycat Local Unlock",
   "description": "Locally treats the Copycat perk deck unlock flag as available. Intended for private/local play only.",
   "author": "Simon",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "blt_version": 2,
   "hooks": [
     {
