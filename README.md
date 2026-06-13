@@ -8,8 +8,9 @@ A tiny SuperBLT mod that locally treats PAYDAY 2's Copycat perk deck unlock flag
 - Does not unlock paid DLC broadly
 - Does not grant perk points
 - Does not modify unrelated DLC checks
-- Avoids overriding `has_dlc`, which makes it less likely to conflict with broader DLC-related mods
-- Chains to any existing `GenericDLCManager.is_dlc_unlocked` implementation loaded before it
+- Avoids platform entitlement checks used by broader DLC-related mods
+- Overrides only Copycat's dedicated `GenericDLCManager:has_mrwi_deck()` predicate
+- Keeps a scoped `is_dlc_unlocked("mrwi_deck")` fallback for UI paths
 
 Intended for private/local play with friends.
 
@@ -35,10 +36,10 @@ This is intentionally scoped to Copycat's unlock id only. If the deck still appe
 
 ## Compatibility
 
-Version `1.0.1` is designed to be less invasive around other DLC-related mods:
+Version `1.0.2` is designed to avoid conflicts with broad DLC-related mods like `pd2-stuff/DLC-Unlocker-PD2`:
 
-- It only wraps `GenericDLCManager:is_dlc_unlocked`.
-- It no longer wraps `GenericDLCManager:has_dlc`.
-- For anything except `mrwi_deck`, it delegates to the previous implementation.
+- That mod patches platform entitlement checks such as `WinSteamDLCManager:_check_dlc_data()`.
+- Copycat is not gated by that normal entitlement path. It is gated by `GenericDLCManager:has_mrwi_deck()`, which checks event-job reward state.
+- This mod therefore overrides only `has_mrwi_deck()` and keeps a scoped `is_dlc_unlocked("mrwi_deck")` fallback.
 
 If another mod also changes DLC behavior, keep that mod installed as usual and install this one alongside it.
