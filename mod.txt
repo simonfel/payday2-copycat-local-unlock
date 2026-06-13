@@ -2,11 +2,15 @@
   "name": "Copycat Local Unlock",
   "description": "Locally treats the Copycat perk deck unlock flag as available. Intended for private/local play only.",
   "author": "Simon",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "blt_version": 2,
   "hooks": [
     {
       "hook_id": "lib/tweak_data/skilltreetweakdata",
+      "script_path": "copycat_local_unlock.lua"
+    },
+    {
+      "hook_id": "lib/managers/sidejobeventmanager",
       "script_path": "copycat_local_unlock.lua"
     }
   ]
